@@ -103,6 +103,7 @@ mod euler;
 mod point;
 mod rotation;
 mod transform;
+mod trans;
 
 mod projection;
 
