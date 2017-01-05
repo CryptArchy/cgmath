@@ -19,7 +19,7 @@ use std::cmp;
 use std::fmt;
 use std::ops::*;
 
-use num_traits::{Float, Num, NumCast};
+use num_traits::{Float, Num, NumCast, Signed, Unsigned};
 
 /// A trait providing a [partial ordering](http://mathworld.wolfram.com/PartialOrder.html).
 pub trait PartialOrd {
@@ -98,19 +98,22 @@ impl_basenum_float!(f32);
 impl_basenum_float!(f64);
 
 
-/// Base integer types
-pub trait BaseInt : BaseNum {}
+/// Base signed integer types
+pub trait BaseInt : BaseNum + Signed {}
+
+/// Base unsigned integer types
+pub trait BaseUint : BaseNum + Unsigned {}
 
 impl BaseInt for i8 {}
 impl BaseInt for i16 {}
 impl BaseInt for i32 {}
 impl BaseInt for i64 {}
 impl BaseInt for isize {}
-impl BaseInt for u8 {}
-impl BaseInt for u16 {}
-impl BaseInt for u32 {}
-impl BaseInt for u64 {}
-impl BaseInt for usize {}
+impl BaseUint for u8 {}
+impl BaseUint for u16 {}
+impl BaseUint for u32 {}
+impl BaseUint for u64 {}
+impl BaseUint for usize {}
 
 /// Base floating point types
 pub trait BaseFloat : BaseNum + Float + ApproxEq<Epsilon = Self> {}

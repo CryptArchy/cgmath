@@ -175,12 +175,15 @@ impl<S: BaseFloat> MetricSpace for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> InnerSpace for Quaternion<S> {
+impl<S: BaseFloat> DotProduct for Quaternion<S> {
+    type Output = S;
     #[inline]
-    fn dot(self, other: Quaternion<S>) -> S {
+    fn dot(self, other: Quaternion<S>) -> Self::Output {
         self.s * other.s + self.v.dot(other.v)
     }
 }
+
+impl<S: BaseFloat> InnerSpace for Quaternion<S> { }
 
 impl<A> From<Euler<A>> for Quaternion<<A as Angle>::Unitless> where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,

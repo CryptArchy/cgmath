@@ -72,7 +72,8 @@ pub use structure::*;
 
 pub use matrix::{Matrix2, Matrix3, Matrix4};
 pub use quaternion::Quaternion;
-pub use vector::{Vector1, Vector2, Vector3, Vector4, dot, vec1, vec2, vec3, vec4};
+pub use normal::{Normal1, Normal2, Normal3, Normal4, norm1, norm2, norm3, norm4};
+pub use vector::{Vector1, Vector2, Vector3, Vector4, vec1, vec2, vec3, vec4};
 
 pub use angle::{Deg, Rad};
 pub use euler::Euler;
@@ -93,6 +94,7 @@ mod num;
 mod structure;
 
 mod matrix;
+mod normal;
 mod quaternion;
 mod vector;
 
@@ -103,3 +105,41 @@ mod rotation;
 mod transform;
 
 mod projection;
+
+impl<S: BaseFloat> CrossProduct<Vector3<S>> for Normal3<S> {
+    type Output = Vector3<S>;
+    #[inline]
+    #[must_use]
+    fn cross(self, other: Vector3<S>) -> Self::Output {
+        Vector3::new((self.y * other.z) - (self.z * other.y),
+                     (self.z * other.x) - (self.x * other.z),
+                     (self.x * other.y) - (self.y * other.x))
+    }
+}
+
+impl<S: BaseFloat> CrossProduct<Normal3<S>> for Vector3<S> {
+    type Output = Vector3<S>;
+    #[inline]
+    #[must_use]
+    fn cross(self, other: Normal3<S>) -> Self::Output {
+        Vector3::new((self.y * other.z) - (self.z * other.y),
+                     (self.z * other.x) - (self.x * other.z),
+                     (self.x * other.y) - (self.y * other.x))
+    }
+}
+
+// impl<S: BaseFloat> DotProduct<Vector3<S>> for Normal3<S> {
+//     type Output = S;
+//     #[inline]
+//     fn dot(self, other: Vector3<S>) -> Self::Output {
+//         Vector3::mul_element_wise(self, other).sum()
+//     }
+// }
+
+// impl<S: BaseFloat> DotProduct<Normal3<S>> for Vector3<S> {
+//     type Output = S;
+//     #[inline]
+//     fn dot(self, other: Normal3<S>) -> Self::Output {
+//         Vector3::mul_element_wise(self, other).sum()
+//     }
+// }

@@ -87,6 +87,14 @@ macro_rules! impl_test_rem {
     )
 }
 
+macro_rules! impl_test_neg {
+    ($VectorN:ident { $($field:ident),+ }, $v:expr) => (
+        // -vector ops
+        assert_eq!(-$v, $VectorN::new($(-$v.$field),+));
+        assert_eq!(-&$v, -$v);
+    )
+}
+
 #[test]
 fn test_add() {
     impl_test_add!(Vector4 { x, y, z, w }, 2.0f32, vec4(2.0f32, 4.0, 6.0, 8.0));
@@ -120,6 +128,13 @@ fn test_rem() {
     impl_test_rem!(Vector4 { x, y, z, w }, 2.0f32, vec4(2.0f32, 4.0, 6.0, 8.0));
     impl_test_rem!(Vector3 { x, y, z }, 2.0f32, vec3(2.0f32, 4.0, 6.0));
     impl_test_rem!(Vector2 { x, y }, 2.0f32, vec2(2.0f32, 4.0));
+}
+
+#[test]
+fn test_neg() {
+    impl_test_neg!(Vector4 { x, y, z, w }, vec4(2.0f32, -4.0, 6.0, 8.0));
+    impl_test_neg!(Vector3 { x, y, z }, vec3(2.0f32, -4.0, 6.0));
+    impl_test_neg!(Vector2 { x, y }, vec2(2.0f32, -4.0));
 }
 
 #[test]

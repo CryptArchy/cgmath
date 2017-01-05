@@ -127,6 +127,16 @@ macro_rules! impl_point {
             fn max(self) -> S where S: PartialOrd {
                 fold_array!(partial_max, { $(self.$field),+ })
             }
+
+            #[inline]
+            fn pluck_min(self, other: Self) -> Self where S: PartialOrd {
+                $PointN { $($field: self.$field.partial_min(other.$field)),+ }
+            }
+
+            #[inline]
+            fn pluck_max(self, other: Self) -> Self where S: PartialOrd {
+                $PointN { $($field: self.$field.partial_max(other.$field)),+ }
+            }
         }
 
         impl<S: NumCast + Copy> $PointN<S> {

@@ -15,7 +15,7 @@
 
 //! Generic algebraic structures
 
-use num_traits::{cast, Float};
+use num_traits::{abs, cast, Float, Signed};
 use std::cmp;
 use std::ops::*;
 
@@ -77,6 +77,12 @@ pub trait Array where
 
     /// The maximum element of the array.
     fn max(self) -> Self::Element where Self::Element: PartialOrd;
+
+    /// Build a new Array by selecting the min element at each index.
+    fn pluck_min(self, other: Self) -> Self where Self::Element: PartialOrd;
+
+    /// Build a new Array by selecting the max element at each index.
+    fn pluck_max(self, other: Self) -> Self where Self::Element: PartialOrd;
 }
 
 /// Element-wise arithmetic operations. These are supplied for pragmatic
@@ -105,16 +111,19 @@ pub trait ElementWise<Rhs = Self> {
 ///
 /// ## Vector addition
 ///
-/// Vectors can be added, subtracted, or negated via the following traits:
+/// Vectors can be added or subtracted via the following traits:
 ///
 /// - `Add<Output = Self>`
 /// - `Sub<Output = Self>`
+///
+/// They can be negated if their scalar type supports it (ie floats and signed ints):
+///
 /// - `Neg<Output = Self>`
 ///
 /// ```rust
 /// use cgmath::Vector3;
 ///
-/// let velocity0 = Vector3::new(1, 2, 0);
+/// let velocity0 = Vector3::new(1, -2, 0);
 /// let velocity1 = Vector3::new(1, 1, 0);
 ///
 /// let total_velocity = velocity0 + velocity1;
@@ -186,6 +195,56 @@ pub trait MetricSpace: Sized {
     }
 }
 
+/// A type supporting a [dot product](https://en.wikipedia.org/wiki/Dot_product) operation
+/// (aka an [inner](https://en.wikipedia.org/wiki/Inner_product_space)) product).
+///
+/// The dot product allows for the definition of other useful operations, like
+/// finding the magnitude of a vector or normalizing it.
+///
+/// Examples include vectors and quaternions.
+pub trait DotProduct<RHS = Self>: Sized {
+    type Output;
+    /// Dot (or inner) product.
+    fn dot(self, other: RHS) -> Self::Output;
+
+    fn abs_dot(self, other: RHS) -> Self::Output where Self::Output: Signed {
+        abs(self.dot(other))
+    }
+}
+
+/// Dot product of two things that support dot products.
+#[inline]
+pub fn dot<V, U, R>(a: V, b: U) -> R where V: DotProduct<U, Output=R> {
+    V::dot(a, b)
+}
+
+/// A type supporting a [cross product](https://en.wikipedia.org/wiki/Cross_product) operation
+/// (aka a vector product).
+///
+/// The cross product of two vectors is perpendicular to both of them, unless they point in the
+/// same or opposite directions, in which case it is zero.
+///
+/// Examples includes vectors and normals in three and seven dimensions.
+pub trait CrossProduct<RHS = Self> {
+    type Output;
+    fn cross(self, other: RHS) -> Self::Output;
+}
+
+/// Cross product of two things that support cross products.
+#[inline]
+pub fn cross<V, U, R>(a: V, b: U) -> R where V: CrossProduct<U, Output=R> {
+    V::cross(a, b)
+}
+
+pub trait FaceForward<RHS = Self> where
+    Self: Copy + Neg<Output = Self> + DotProduct<RHS>,
+    <Self as DotProduct<RHS>>::Output: Zero + cmp::PartialOrd,
+{
+    fn face_forward(self, other: RHS) -> Self {
+        if self.dot(other) < <Self as DotProduct<RHS>>::Output::zero() { -self } else { self }
+    }
+}
+
 /// Vectors that also have a [dot](https://en.wikipedia.org/wiki/Dot_product)
 /// (or [inner](https://en.wikipedia.org/wiki/Inner_product_space)) product.
 ///
@@ -196,12 +255,11 @@ pub trait MetricSpace: Sized {
 pub trait InnerSpace: VectorSpace where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <Self as VectorSpace>::Scalar: BaseFloat,
+    Self: DotProduct<Output = <Self as VectorSpace>::Scalar>,
     Self: MetricSpace<Metric = <Self as VectorSpace>::Scalar>,
     Self: ApproxEq<Epsilon = <Self as VectorSpace>::Scalar>,
+    Self: Neg<Output = Self>,
 {
-    /// Vector dot (or inner) product.
-    fn dot(self, other: Self) -> Self::Scalar;
-
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(self, other: Self) -> bool {
