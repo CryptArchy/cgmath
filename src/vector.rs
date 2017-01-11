@@ -242,7 +242,7 @@ impl<S: BaseFloat> DotProduct for Vector3<S> {
         Vector3::mul_element_wise(self, other).sum()
     }
 }
-impl<S: BaseFloat> CrossProduct for Vector3<S> {
+impl<S: BaseNum> CrossProduct for Vector3<S> {
     type Output = Vector3<S>;
     #[inline]
     #[must_use]

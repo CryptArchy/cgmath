@@ -101,6 +101,84 @@ pub trait ElementWise<Rhs = Self> {
     fn rem_assign_element_wise(&mut self, rhs: Rhs);
 }
 
+pub trait ElementWiseFloat {
+    fn floor_element_wise(self) -> Self;
+    fn ceil_element_wise(self) -> Self;
+}
+
+/// A type supporting a [dot product](https://en.wikipedia.org/wiki/Dot_product) operation
+/// (aka an [inner](https://en.wikipedia.org/wiki/Inner_product_space)) product).
+///
+/// The dot product allows for the definition of other useful operations, like
+/// finding the magnitude of a vector or normalizing it.
+///
+/// Examples include vectors and quaternions.
+pub trait DotProduct<RHS = Self>: Sized {
+    type Output;
+    /// Dot (or inner) product.
+    fn dot(self, other: RHS) -> Self::Output;
+
+    fn abs_dot(self, other: RHS) -> Self::Output where Self::Output: Signed {
+        abs(self.dot(other))
+    }
+}
+
+/// Dot product of two things that support dot products.
+#[inline]
+pub fn dot<V, U, R>(a: V, b: U) -> R where V: DotProduct<U, Output=R> {
+    V::dot(a, b)
+}
+
+/// A type supporting a [cross product](https://en.wikipedia.org/wiki/Cross_product) operation
+/// (aka a vector product).
+///
+/// The cross product of two vectors is perpendicular to both of them, unless they point in the
+/// same or opposite directions, in which case it is zero.
+///
+/// Examples includes vectors and normals in three and seven dimensions.
+pub trait CrossProduct<RHS = Self> {
+    type Output;
+    fn cross(self, other: RHS) -> Self::Output;
+}
+
+/// Cross product of two things that support cross products.
+#[inline]
+pub fn cross<V, U, R>(a: V, b: U) -> R where V: CrossProduct<U, Output=R> {
+    V::cross(a, b)
+}
+
+pub trait FaceForward<RHS = Self> where
+    Self: Copy + Neg<Output = Self> + DotProduct<RHS>,
+    <Self as DotProduct<RHS>>::Output: Zero + cmp::PartialOrd,
+{
+    fn face_forward(self, other: RHS) -> Self {
+        if self.dot(other) < <Self as DotProduct<RHS>>::Output::zero() { -self } else { self }
+    }
+}
+
+/// Cross product of two things that support cross products.
+#[inline]
+pub fn face_forward<V, U>(a: V, b: U) -> V where
+    V: FaceForward<U>,
+    <V as DotProduct<U>>::Output: Zero + cmp::PartialOrd,
+{
+    V::face_forward(a, b)
+}
+
+// pub trait Invert where
+//     Self: Copy,
+// {
+//     /// Invert this matrix, returning a new matrix. `m.mul_m(m.invert())` is
+//     /// the identity matrix. Returns `None` if this matrix is not invertible
+//     /// (has a determinant of zero).
+//     #[must_use]
+//     fn invert(&self) -> Option<Self>;
+
+//     /// Test if this matrix is invertible.
+//     #[inline]
+//     fn is_invertible(&self) -> bool { ulps_ne!(self.determinant(), &Self::Scalar::zero()) }
+// }
+
 /// Vectors that can be [added](http://mathworld.wolfram.com/VectorAddition.html)
 /// together and [multiplied](https://en.wikipedia.org/wiki/Scalar_multiplication)
 /// by scalars.
@@ -192,56 +270,6 @@ pub trait MetricSpace: Sized {
     /// The distance between two values.
     fn distance(self, other: Self) -> Self::Metric {
         Float::sqrt(Self::distance2(self, other))
-    }
-}
-
-/// A type supporting a [dot product](https://en.wikipedia.org/wiki/Dot_product) operation
-/// (aka an [inner](https://en.wikipedia.org/wiki/Inner_product_space)) product).
-///
-/// The dot product allows for the definition of other useful operations, like
-/// finding the magnitude of a vector or normalizing it.
-///
-/// Examples include vectors and quaternions.
-pub trait DotProduct<RHS = Self>: Sized {
-    type Output;
-    /// Dot (or inner) product.
-    fn dot(self, other: RHS) -> Self::Output;
-
-    fn abs_dot(self, other: RHS) -> Self::Output where Self::Output: Signed {
-        abs(self.dot(other))
-    }
-}
-
-/// Dot product of two things that support dot products.
-#[inline]
-pub fn dot<V, U, R>(a: V, b: U) -> R where V: DotProduct<U, Output=R> {
-    V::dot(a, b)
-}
-
-/// A type supporting a [cross product](https://en.wikipedia.org/wiki/Cross_product) operation
-/// (aka a vector product).
-///
-/// The cross product of two vectors is perpendicular to both of them, unless they point in the
-/// same or opposite directions, in which case it is zero.
-///
-/// Examples includes vectors and normals in three and seven dimensions.
-pub trait CrossProduct<RHS = Self> {
-    type Output;
-    fn cross(self, other: RHS) -> Self::Output;
-}
-
-/// Cross product of two things that support cross products.
-#[inline]
-pub fn cross<V, U, R>(a: V, b: U) -> R where V: CrossProduct<U, Output=R> {
-    V::cross(a, b)
-}
-
-pub trait FaceForward<RHS = Self> where
-    Self: Copy + Neg<Output = Self> + DotProduct<RHS>,
-    <Self as DotProduct<RHS>>::Output: Zero + cmp::PartialOrd,
-{
-    fn face_forward(self, other: RHS) -> Self {
-        if self.dot(other) < <Self as DotProduct<RHS>>::Output::zero() { -self } else { self }
     }
 }
 

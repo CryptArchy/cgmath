@@ -296,22 +296,23 @@ impl<S: fmt::Debug> fmt::Debug for Normal4<S> {
     }
 }
 
+
 #[cfg(test)]
 mod tests {
-    mod Normal2 {
+    mod normal2 {
         use normal::*;
 
-        const Normal2: Normal2<i32> = Normal2 { x: 1, y: 2 };
+        const NORMAL2: Normal2<i32> = Normal2 { x: 1, y: 2 };
 
         #[test]
         fn test_index() {
-            assert_eq!(Normal2[0], Normal2.x);
-            assert_eq!(Normal2[1], Normal2.y);
+            assert_eq!(NORMAL2[0], NORMAL2.x);
+            assert_eq!(NORMAL2[1], NORMAL2.y);
         }
 
         #[test]
         fn test_index_mut() {
-            let mut v = Normal2;
+            let mut v = NORMAL2;
             *&mut v[0] = 0;
             assert_eq!(v, [0, 2].into());
         }
@@ -319,26 +320,26 @@ mod tests {
         #[test]
         #[should_panic]
         fn test_index_out_of_bounds() {
-            Normal2[2];
+            NORMAL2[2];
         }
 
         #[test]
         fn test_index_range() {
-            assert_eq!(&Normal2[..0], &[]);
-            assert_eq!(&Normal2[..1], &[1]);
-            assert_eq!(Normal2[..0].len(), 0);
-            assert_eq!(Normal2[..1].len(), 1);
-            assert_eq!(&Normal2[2..], &[]);
-            assert_eq!(&Normal2[1..], &[2]);
-            assert_eq!(Normal2[2..].len(), 0);
-            assert_eq!(Normal2[1..].len(), 1);
-            assert_eq!(&Normal2[..], &[1, 2]);
-            assert_eq!(Normal2[..].len(), 2);
+            assert_eq!(&NORMAL2[..0], &[]);
+            assert_eq!(&NORMAL2[..1], &[1]);
+            assert_eq!(NORMAL2[..0].len(), 0);
+            assert_eq!(NORMAL2[..1].len(), 1);
+            assert_eq!(&NORMAL2[2..], &[]);
+            assert_eq!(&NORMAL2[1..], &[2]);
+            assert_eq!(NORMAL2[2..].len(), 0);
+            assert_eq!(NORMAL2[1..].len(), 1);
+            assert_eq!(&NORMAL2[..], &[1, 2]);
+            assert_eq!(NORMAL2[..].len(), 2);
         }
 
         #[test]
         fn test_into() {
-            let v = Normal2;
+            let v = NORMAL2;
             {
                 let v: [i32; 2] = v.into();
                 assert_eq!(v, [1, 2]);
@@ -351,7 +352,7 @@ mod tests {
 
         #[test]
         fn test_as_ref() {
-            let v = Normal2;
+            let v = NORMAL2;
             {
                 let v: &[i32; 2] = v.as_ref();
                 assert_eq!(v, &[1, 2]);
@@ -364,7 +365,7 @@ mod tests {
 
         #[test]
         fn test_as_mut() {
-            let mut v = Normal2;
+            let mut v = NORMAL2;
             {
                 let v: &mut [i32; 2] = v.as_mut();
                 assert_eq!(v, &mut [1, 2]);
@@ -377,46 +378,46 @@ mod tests {
 
         #[test]
         fn test_from() {
-            assert_eq!(Normal2::from([1, 2]), Normal2);
+            assert_eq!(Normal2::from([1, 2]), NORMAL2);
             {
                 let v = &[1, 2];
                 let v: &Normal2<_> = From::from(v);
-                assert_eq!(v, &Normal2);
+                assert_eq!(v, &NORMAL2);
             }
             {
                 let v = &mut [1, 2];
                 let v: &mut Normal2<_> = From::from(v);
-                assert_eq!(v, &Normal2);
+                assert_eq!(v, &NORMAL2);
             }
-            assert_eq!(Normal2::from((1, 2)), Normal2);
+            assert_eq!(Normal2::from((1, 2)), NORMAL2);
             {
                 let v = &(1, 2);
                 let v: &Normal2<_> = From::from(v);
-                assert_eq!(v, &Normal2);
+                assert_eq!(v, &NORMAL2);
             }
             {
                 let v = &mut (1, 2);
                 let v: &mut Normal2<_> = From::from(v);
-                assert_eq!(v, &Normal2);
+                assert_eq!(v, &NORMAL2);
             }
         }
     }
 
-    mod Normal3 {
-        use vector::*;
+    mod normal3 {
+        use normal::*;
 
-        const Normal3: Normal3<i32> = Normal3 { x: 1, y: 2, z: 3 };
+        const NORMAL3: Normal3<i32> = Normal3 { x: 1, y: 2, z: 3 };
 
         #[test]
         fn test_index() {
-            assert_eq!(Normal3[0], Normal3.x);
-            assert_eq!(Normal3[1], Normal3.y);
-            assert_eq!(Normal3[2], Normal3.z);
+            assert_eq!(NORMAL3[0], NORMAL3.x);
+            assert_eq!(NORMAL3[1], NORMAL3.y);
+            assert_eq!(NORMAL3[2], NORMAL3.z);
         }
 
         #[test]
         fn test_index_mut() {
-            let mut v = Normal3;
+            let mut v = NORMAL3;
             *&mut v[1] = 0;
             assert_eq!(v, [1, 0, 3].into());
         }
@@ -424,26 +425,26 @@ mod tests {
         #[test]
         #[should_panic]
         fn test_index_out_of_bounds() {
-            Normal3[3];
+            NORMAL3[3];
         }
 
         #[test]
         fn test_index_range() {
-            assert_eq!(&Normal3[..1], &[1]);
-            assert_eq!(&Normal3[..2], &[1, 2]);
-            assert_eq!(Normal3[..1].len(), 1);
-            assert_eq!(Normal3[..2].len(), 2);
-            assert_eq!(&Normal3[2..], &[3]);
-            assert_eq!(&Normal3[1..], &[2, 3]);
-            assert_eq!(Normal3[2..].len(), 1);
-            assert_eq!(Normal3[1..].len(), 2);
-            assert_eq!(&Normal3[..], &[1, 2, 3]);
-            assert_eq!(Normal3[..].len(), 3);
+            assert_eq!(&NORMAL3[..1], &[1]);
+            assert_eq!(&NORMAL3[..2], &[1, 2]);
+            assert_eq!(NORMAL3[..1].len(), 1);
+            assert_eq!(NORMAL3[..2].len(), 2);
+            assert_eq!(&NORMAL3[2..], &[3]);
+            assert_eq!(&NORMAL3[1..], &[2, 3]);
+            assert_eq!(NORMAL3[2..].len(), 1);
+            assert_eq!(NORMAL3[1..].len(), 2);
+            assert_eq!(&NORMAL3[..], &[1, 2, 3]);
+            assert_eq!(NORMAL3[..].len(), 3);
         }
 
         #[test]
         fn test_into() {
-            let v = Normal3;
+            let v = NORMAL3;
             {
                 let v: [i32; 3] = v.into();
                 assert_eq!(v, [1, 2, 3]);
@@ -456,7 +457,7 @@ mod tests {
 
         #[test]
         fn test_as_ref() {
-            let v = Normal3;
+            let v = NORMAL3;
             {
                 let v: &[i32; 3] = v.as_ref();
                 assert_eq!(v, &[1, 2, 3]);
@@ -469,7 +470,7 @@ mod tests {
 
         #[test]
         fn test_as_mut() {
-            let mut v = Normal3;
+            let mut v = NORMAL3;
             {
                 let v: &mut [i32; 3] = v.as_mut();
                 assert_eq!(v, &mut [1, 2, 3]);
@@ -482,47 +483,47 @@ mod tests {
 
         #[test]
         fn test_from() {
-            assert_eq!(Normal3::from([1, 2, 3]), Normal3);
+            assert_eq!(Normal3::from([1, 2, 3]), NORMAL3);
             {
                 let v = &[1, 2, 3];
                 let v: &Normal3<_> = From::from(v);
-                assert_eq!(v, &Normal3);
+                assert_eq!(v, &NORMAL3);
             }
             {
                 let v = &mut [1, 2, 3];
                 let v: &mut Normal3<_> = From::from(v);
-                assert_eq!(v, &Normal3);
+                assert_eq!(v, &NORMAL3);
             }
-            assert_eq!(Normal3::from((1, 2, 3)), Normal3);
+            assert_eq!(Normal3::from((1, 2, 3)), NORMAL3);
             {
                 let v = &(1, 2, 3);
                 let v: &Normal3<_> = From::from(v);
-                assert_eq!(v, &Normal3);
+                assert_eq!(v, &NORMAL3);
             }
             {
                 let v = &mut (1, 2, 3);
                 let v: &mut Normal3<_> = From::from(v);
-                assert_eq!(v, &Normal3);
+                assert_eq!(v, &NORMAL3);
             }
         }
     }
 
-    mod Normal4 {
-        use vector::*;
+    mod normal4 {
+        use normal::*;
 
-        const Normal4: Normal4<i32> = Normal4 { x: 1, y: 2, z: 3, w: 4 };
+        const NORMAL4: Normal4<i32> = Normal4 { x: 1, y: 2, z: 3, w: 4 };
 
         #[test]
         fn test_index() {
-            assert_eq!(Normal4[0], Normal4.x);
-            assert_eq!(Normal4[1], Normal4.y);
-            assert_eq!(Normal4[2], Normal4.z);
-            assert_eq!(Normal4[3], Normal4.w);
+            assert_eq!(NORMAL4[0], NORMAL4.x);
+            assert_eq!(NORMAL4[1], NORMAL4.y);
+            assert_eq!(NORMAL4[2], NORMAL4.z);
+            assert_eq!(NORMAL4[3], NORMAL4.w);
         }
 
         #[test]
         fn test_index_mut() {
-            let mut v = Normal4;
+            let mut v = NORMAL4;
             *&mut v[2] = 0;
             assert_eq!(v, [1, 2, 0, 4].into());
         }
@@ -530,26 +531,26 @@ mod tests {
         #[test]
         #[should_panic]
         fn test_index_out_of_bounds() {
-            Normal4[4];
+            NORMAL4[4];
         }
 
         #[test]
         fn test_index_range() {
-            assert_eq!(&Normal4[..2], &[1, 2]);
-            assert_eq!(&Normal4[..3], &[1, 2, 3]);
-            assert_eq!(Normal4[..2].len(), 2);
-            assert_eq!(Normal4[..3].len(), 3);
-            assert_eq!(&Normal4[2..], &[3, 4]);
-            assert_eq!(&Normal4[1..], &[2, 3, 4]);
-            assert_eq!(Normal4[2..].len(), 2);
-            assert_eq!(Normal4[1..].len(), 3);
-            assert_eq!(&Normal4[..], &[1, 2, 3, 4]);
-            assert_eq!(Normal4[..].len(), 4);
+            assert_eq!(&NORMAL4[..2], &[1, 2]);
+            assert_eq!(&NORMAL4[..3], &[1, 2, 3]);
+            assert_eq!(NORMAL4[..2].len(), 2);
+            assert_eq!(NORMAL4[..3].len(), 3);
+            assert_eq!(&NORMAL4[2..], &[3, 4]);
+            assert_eq!(&NORMAL4[1..], &[2, 3, 4]);
+            assert_eq!(NORMAL4[2..].len(), 2);
+            assert_eq!(NORMAL4[1..].len(), 3);
+            assert_eq!(&NORMAL4[..], &[1, 2, 3, 4]);
+            assert_eq!(NORMAL4[..].len(), 4);
         }
 
         #[test]
         fn test_into() {
-            let v = Normal4;
+            let v = NORMAL4;
             {
                 let v: [i32; 4] = v.into();
                 assert_eq!(v, [1, 2, 3, 4]);
@@ -562,7 +563,7 @@ mod tests {
 
         #[test]
         fn test_as_ref() {
-            let v = Normal4;
+            let v = NORMAL4;
             {
                 let v: &[i32; 4] = v.as_ref();
                 assert_eq!(v, &[1, 2, 3, 4]);
@@ -575,7 +576,7 @@ mod tests {
 
         #[test]
         fn test_as_mut() {
-            let mut v = Normal4;
+            let mut v = NORMAL4;
             {
                 let v: &mut[i32; 4] = v.as_mut();
                 assert_eq!(v, &mut [1, 2, 3, 4]);
@@ -588,27 +589,27 @@ mod tests {
 
         #[test]
         fn test_from() {
-            assert_eq!(Normal4::from([1, 2, 3, 4]), Normal4);
+            assert_eq!(Normal4::from([1, 2, 3, 4]), NORMAL4);
             {
                 let v = &[1, 2, 3, 4];
                 let v: &Normal4<_> = From::from(v);
-                assert_eq!(v, &Normal4);
+                assert_eq!(v, &NORMAL4);
             }
             {
                 let v = &mut [1, 2, 3, 4];
                 let v: &mut Normal4<_> = From::from(v);
-                assert_eq!(v, &Normal4);
+                assert_eq!(v, &NORMAL4);
             }
-            assert_eq!(Normal4::from((1, 2, 3, 4)), Normal4);
+            assert_eq!(Normal4::from((1, 2, 3, 4)), NORMAL4);
             {
                 let v = &(1, 2, 3, 4);
                 let v: &Normal4<_> = From::from(v);
-                assert_eq!(v, &Normal4);
+                assert_eq!(v, &NORMAL4);
             }
             {
                 let v = &mut (1, 2, 3, 4);
                 let v: &mut Normal4<_> = From::from(v);
-                assert_eq!(v, &Normal4);
+                assert_eq!(v, &NORMAL4);
             }
         }
     }

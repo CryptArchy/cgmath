@@ -474,6 +474,11 @@ macro_rules! impl_vector {
             #[inline] fn rem_assign_element_wise(&mut self, rhs: S) { $(self.$field %= rhs);+ }
         }
 
+        impl<S: BaseFloat> ElementWiseFloat for $VectorN<S> {
+            #[inline] fn floor_element_wise(self) -> $VectorN<S> { $VectorN::new($(self.$field.floor()),+) }
+            #[inline] fn ceil_element_wise(self) -> $VectorN<S> { $VectorN::new($(self.$field.ceil()),+) }
+        }
+
         impl_vector_scalar_ops!($VectorN<usize> { $($field),+ });
         impl_vector_scalar_ops!($VectorN<u8> { $($field),+ });
         impl_vector_scalar_ops!($VectorN<u16> { $($field),+ });
