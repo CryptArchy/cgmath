@@ -25,6 +25,20 @@ use angle::Rad;
 use approx::ApproxEq;
 use num::{BaseNum, BaseFloat, PartialOrd};
 
+// Differences with Normal3 and Vector3
+// Normal cannot be added to a Point
+// Cross Product can be: V*V, V*N, N*V. (NOT N*N) Always returns V
+// Dot Product can be: V*V, V*N, N*V, N*N
+// AbsDot is same
+// Faceforward can be: NfN, NfV, VfN, VfV
+
+// Misc Operations
+// Componentized Min, Max, Floor, Ceiling, arithmatic
+// Which dimension has the Min or Max value
+// New vector from Min/Max components of two vectors
+// New vector by permuting components of vector
+// Dot, AbsDot, Abs, FaceForward
+
 /// A 1-dimensional surface-normal vector.
 ///
 /// This type is marked as `#[repr(C)]`.
