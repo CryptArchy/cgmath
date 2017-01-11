@@ -74,6 +74,7 @@ pub use matrix::{Matrix2, Matrix3, Matrix4};
 pub use quaternion::Quaternion;
 pub use normal::{Normal1, Normal2, Normal3, Normal4, norm1, norm2, norm3, norm4};
 pub use vector::{Vector1, Vector2, Vector3, Vector4, vec1, vec2, vec3, vec4};
+pub use ray::{Ray2, Ray3};
 
 pub use angle::{Deg, Rad};
 pub use euler::Euler;
@@ -96,6 +97,7 @@ mod structure;
 mod matrix;
 mod normal;
 mod quaternion;
+mod ray;
 mod vector;
 
 mod angle;
